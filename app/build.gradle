@@ -1,3 +1,4 @@
+apply plugin: 'com.google.protobuf'
 apply plugin: 'com.android.application'
 
 android {
@@ -17,6 +18,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+
+    }
 }
 
 dependencies {
@@ -28,4 +32,26 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.protobuf:protobuf-java:3.0.0'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.0.0"
+    }
+    plugins {
+        lite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                lite { }
+            }
+        }
+    }
 }

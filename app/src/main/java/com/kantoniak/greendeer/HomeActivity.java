@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.kantoniak.greendeer.ui.RunAdapter;
+
 public class HomeActivity extends AppCompatActivity {
+
+    private RecyclerView mRecyclerView;
+    private RunAdapter runAdapter = new RunAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +34,14 @@ public class HomeActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.run_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(runAdapter);
     }
 
     @Override

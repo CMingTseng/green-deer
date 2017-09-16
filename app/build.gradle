@@ -21,6 +21,11 @@ android {
     sourceSets {
 
     }
+    configurations.all {
+        // Force the same version of com.google.code.findbugs because of mismatching dependency
+        // versions. See http://g.co/androidstudio/app-test-app-conflict
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.0'
+    }
 }
 
 dependencies {
@@ -31,15 +36,21 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
-    compile 'com.google.protobuf:protobuf-java:3.0.0'
+    compile 'com.google.protobuf:protobuf-java:3.4.0'
+    compile 'io.grpc:grpc-stub:1.6.0'
+    compile 'io.grpc:grpc-protobuf:1.6.0'
+    compile 'javax.annotation:jsr250-api:1.0' // For gRPC server
     testCompile 'junit:junit:4.12'
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.0.0"
+        artifact = "com.google.protobuf:protoc:3.4.0"
     }
     plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.6.0'
+        }
         lite {
             artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
         }
@@ -51,7 +62,11 @@ protobuf {
             }
             task.plugins {
                 lite {}
+                grpc {
+                    option 'lite'
+                }
             }
         }
+
     }
 }

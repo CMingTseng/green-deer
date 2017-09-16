@@ -17,6 +17,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="RunDateStyle" parent="@style/Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="RunMainInfoStyle" parent="@style/Base.TextAppearance.AppCompat.Medium">
         <item name="android:textSize">20sp</item>
     </style>

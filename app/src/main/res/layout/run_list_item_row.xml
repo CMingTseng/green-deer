@@ -7,38 +7,60 @@
     android:paddingTop="@dimen/regular_margin">
 
     <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 January 2017"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/RunDateStyle" />
+
+    <TextView
+        android:id="@+id/weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:text="(00.0 kg)"
+        app:layout_constraintStart_toEndOf="@id/date"
+        app:layout_constraintTop_toTopOf="@+id/date"
+        style="@style/RunDateStyle" />
+
+    <TextView
         android:id="@+id/kilometers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
         android:text="X.XX km"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/RunMainInfoStyle"/>
-
-    <TextView
-        android:id="@+id/avg_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Avg: 00:00"
-        app:layout_constraintLeft_toRightOf="@+id/kilometers"
-        app:layout_constraintRight_toLeftOf="@+id/time"
-        style="@style/RunMainInfoStyle"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date"
+        style="@style/RunMainInfoStyle" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Σ: 00:00"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/RunMainInfoStyle"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kilometers"
+        style="@style/RunMainInfoStyle" />
+
+    <TextView
+        android:id="@+id/avg_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Avg: 00:00"
+        app:layout_constraintStart_toEndOf="@+id/kilometers"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintTop_toTopOf="@+id/kilometers"
+        style="@style/RunMainInfoStyle" />
 
     <View
-        android:layout_width="368dp"
+        android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/regular_margin"
         app:layout_constraintTop_toBottomOf="@+id/kilometers"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/dividerColor" />
 
 </android.support.constraint.ConstraintLayout>

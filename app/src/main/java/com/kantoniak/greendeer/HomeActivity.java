@@ -70,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final int MESSAGE_FETCH_RUNS = 1000;
 
     private final DataProvider dataProvider = new DataProvider();
-    private final RunAdapter runAdapter = new RunAdapter();
+    private RunAdapter runAdapter;
 
     private View mRunsLoadingView;
     private View mRunsFailedView;
@@ -115,6 +115,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        runAdapter = new RunAdapter(getBaseContext());
         mRecyclerView = (RecyclerView) findViewById(R.id.run_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(runAdapter);

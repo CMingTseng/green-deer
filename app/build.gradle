@@ -33,6 +33,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    // For gRPC server
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
@@ -40,7 +41,7 @@ dependencies {
     compile 'io.grpc:grpc-okhttp:1.6.0'
     compile 'io.grpc:grpc-stub:1.6.0'
     compile 'io.grpc:grpc-protobuf-lite:1.6.0'
-    compile 'javax.annotation:jsr250-api:1.0' // For gRPC server
+    compile 'javax.annotation:jsr250-api:1.0'
     testCompile 'junit:junit:4.12'
 }
 

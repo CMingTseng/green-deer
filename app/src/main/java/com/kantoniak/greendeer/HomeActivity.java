@@ -1,5 +1,6 @@
 package com.kantoniak.greendeer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -96,8 +97,7 @@ public class HomeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addNewRun();
             }
         });
 
@@ -170,5 +170,9 @@ public class HomeActivity extends AppCompatActivity {
         mRunsLoadingView.setVisibility(View.GONE);
         mRunsFailedView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void addNewRun() {
+        startActivity(new Intent(this, AddRunActivity.class));
     }
 }

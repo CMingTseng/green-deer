@@ -1,6 +1,10 @@
 package com.kantoniak.greendeer;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +16,48 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.kantoniak.greendeer.data.DataProvider;
+import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.ui.RunAdapter;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 
+    class NetworkUpdatesHandler extends Handler {
+        NetworkUpdatesHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what) {
+                case MESSAGE_FETCH_RUNS:
+                    logger.log(Level.INFO, "Fetching runs...");
+                    final List<Run> runs = dataProvider.getListOfRuns();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            runAdapter.updateRuns(runs);
+                        }
+                    });
+                    break;
+            }
+        }
+    };
+
+    private static final Logger logger = Logger.getLogger(HomeActivity.class.getName());
+    private static final int MESSAGE_FETCH_RUNS = 1000;
+
+    private final DataProvider dataProvider = new DataProvider();
+    private final RunAdapter runAdapter = new RunAdapter();
+
     private RecyclerView mRecyclerView;
-    private RunAdapter runAdapter = new RunAdapter();
+
+    private final HandlerThread networkUpdatesThread = new HandlerThread("NetworkUpdatesThread");
+    private Handler networkUpdatesHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +76,12 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         setupRecyclerView();
+
+        networkUpdatesThread.start();
+        networkUpdatesHandler = new NetworkUpdatesHandler(networkUpdatesThread.getLooper());
+
+        networkUpdatesHandler.sendMessage(
+                networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
     }
 
     private void setupRecyclerView() {

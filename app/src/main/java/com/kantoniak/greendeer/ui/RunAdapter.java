@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import com.kantoniak.greendeer.R;
 import com.kantoniak.greendeer.data.DataProvider;
-import com.kantoniak.greendeer.data.LocalDataProvider;
 import com.kantoniak.greendeer.proto.Run;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
 
-    private final List<Run> runs = new LocalDataProvider().getListOfRuns();
+    private final List<Run> runs = new LinkedList<>();
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -49,6 +49,9 @@ public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
         return runs.size();
     }
 
-
-
+    public void updateRuns(List<Run> runs) {
+        this.runs.clear();
+        this.runs.addAll(runs);
+        this.notifyDataSetChanged();
+    }
 }

@@ -15,14 +15,21 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.ui.RunAdapter;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+
+import static io.grpc.Status.Code.UNAVAILABLE;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -36,13 +43,24 @@ public class HomeActivity extends AppCompatActivity {
             switch (msg.what) {
                 case MESSAGE_FETCH_RUNS:
                     logger.log(Level.INFO, "Fetching runs...");
-                    final List<Run> runs = dataProvider.getListOfRuns();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    try {
+                        final List<Run> runs = dataProvider.getListOfRuns();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
                             runAdapter.updateRuns(runs);
-                        }
-                    });
+                            showRunsRecyclerView();
+                            }
+                        });
+                    } catch (StatusRuntimeException e) {
+                        logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                            showFetchRunsFailedBlock();
+                            }
+                        });
+                    }
                     break;
             }
         }
@@ -54,6 +72,9 @@ public class HomeActivity extends AppCompatActivity {
     private final DataProvider dataProvider = new DataProvider();
     private final RunAdapter runAdapter = new RunAdapter();
 
+    private View mRunsLoadingView;
+    private View mRunsFailedView;
+    private Button mRetryFetchRunsButton;
     private RecyclerView mRecyclerView;
 
     private final HandlerThread networkUpdatesThread = new HandlerThread("NetworkUpdatesThread");
@@ -75,13 +96,22 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        this.mRunsLoadingView = (View) findViewById(R.id.fetch_runs_loading_block);
+        this.mRunsFailedView = (View) findViewById(R.id.fetch_runs_failed_block);
+        this.mRetryFetchRunsButton = (Button) findViewById(R.id.retry_fetch_runs_button);
+
+        mRetryFetchRunsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startFetchRuns();
+            }
+        });
         setupRecyclerView();
 
         networkUpdatesThread.start();
         networkUpdatesHandler = new NetworkUpdatesHandler(networkUpdatesThread.getLooper());
 
-        networkUpdatesHandler.sendMessage(
-                networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
+        startFetchRuns();
     }
 
     private void setupRecyclerView() {
@@ -110,5 +140,29 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startFetchRuns() {
+        networkUpdatesHandler.sendMessage(
+                networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
+        showFetchRunsLoadingBlock();
+    }
+
+    private void showFetchRunsLoadingBlock() {
+        mRunsLoadingView.setVisibility(View.VISIBLE);
+        mRunsFailedView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showFetchRunsFailedBlock() {
+        mRunsLoadingView.setVisibility(View.GONE);
+        mRunsFailedView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showRunsRecyclerView() {
+        mRunsLoadingView.setVisibility(View.GONE);
+        mRunsFailedView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 }

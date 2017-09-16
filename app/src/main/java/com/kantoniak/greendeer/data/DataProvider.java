@@ -5,6 +5,7 @@ import com.kantoniak.greendeer.proto.GetListResponse;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.proto.RunServiceGrpc;
 
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 public class DataProvider {
@@ -36,19 +38,10 @@ public class DataProvider {
      * Fetches the list of all trainings. Makes a blocking RPC call;
      * @return list of trainings
      */
-    public List<Run> getListOfRuns() {
-
+    public List<Run> getListOfRuns() throws StatusRuntimeException {
         GetListRequest request = GetListRequest.newBuilder().build();
         GetListResponse response;
-        try {
-            response = blockingStub.getList(request);
-        } catch (StatusRuntimeException e) {
-            // TODO(kantoniak): Better error handling. Toast?
-            logger.log(Level.WARNING, "RPC failed: " + e.getStatus());
-            return new LinkedList<>();
-        }
-
-        return response.getRunList().getRunsList();
+        return blockingStub.getList(request).getRunList().getRunsList();
     }
 
     /**

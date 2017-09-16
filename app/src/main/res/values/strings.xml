@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">GreenDeer</string>
+    <string name="app_name">Green Deer</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_ble">ble</string>
 </resources>

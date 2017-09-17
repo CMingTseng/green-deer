@@ -19,6 +19,7 @@ import android.widget.Button;
 
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
+import com.kantoniak.greendeer.proto.Stats;
 import com.kantoniak.greendeer.ui.RunAdapter;
 
 import java.util.List;
@@ -58,13 +59,23 @@ public class HomeActivity extends AppCompatActivity {
                         });
                     }
                     break;
+                case MESSAGE_FETCH_STATS:
+                    logger.log(Level.INFO, "Fetching stats...");
+                    try {
+                        final Stats stats = dataProvider.getStats();
+                        logger.log(Level.INFO, "RPC stats: " + stats);
+                    } catch (StatusRuntimeException e) {
+                        logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
+                    }
+                    break;
             }
         }
     };
 
     private static final Logger logger = Logger.getLogger(HomeActivity.class.getName());
     private static final int MESSAGE_FETCH_RUNS = 1000;
-    private static final int RESULT_ADD_RUN = 1001;
+    private static final int MESSAGE_FETCH_STATS = 1001;
+    private static final int RESULT_ADD_RUN = 1100;
 
     private final DataProvider dataProvider = new DataProvider();
     private RunAdapter runAdapter;
@@ -156,6 +167,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void startFetchRuns() {
+        networkUpdatesHandler.sendMessage(
+                networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_STATS));
         networkUpdatesHandler.sendMessage(
                 networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
         showFetchRunsLoadingBlock();

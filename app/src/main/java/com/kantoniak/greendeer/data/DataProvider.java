@@ -4,8 +4,10 @@ import com.kantoniak.greendeer.proto.AddRunsRequest;
 import com.kantoniak.greendeer.proto.AddRunsResponse;
 import com.kantoniak.greendeer.proto.GetListRequest;
 import com.kantoniak.greendeer.proto.GetListResponse;
+import com.kantoniak.greendeer.proto.GetStatsRequest;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.proto.RunServiceGrpc;
+import com.kantoniak.greendeer.proto.Stats;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,11 @@ public class DataProvider {
             .usePlaintext(true) // Turn off SSL
             .build();
         this.blockingStub = RunServiceGrpc.newBlockingStub(channel);
+    }
+
+    public Stats getStats() throws StatusRuntimeException {
+        GetStatsRequest request = GetStatsRequest.newBuilder().build();
+        return blockingStub.getStats(request).getStats();
     }
 
     /**

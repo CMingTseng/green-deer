@@ -6,13 +6,17 @@ import android.content.Context;
 import android.icu.util.Calendar;
 import android.icu.util.GregorianCalendar;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
 
-public class AddRunActivity extends Activity implements RunDetailsFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
+public class AddRunActivity extends AppCompatActivity implements RunDetailsFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
 
     private RunDetailsFragment mRunDetailsFragment;
 

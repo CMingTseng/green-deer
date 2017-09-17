@@ -31,4 +31,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="CompletnessIndicatorMainText" parent="@style/Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">38sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

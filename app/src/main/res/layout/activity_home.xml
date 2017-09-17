@@ -31,9 +31,32 @@
             android:padding="@dimen/fab_margin"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:weightSum="2">
+
+                <com.kantoniak.greendeer.ui.CompletnessIndicator
+                    android:id="@+id/distance_completness"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gentle_border" />
+
+                <com.kantoniak.greendeer.ui.WeightIndicator
+                    android:id="@+id/weight_completness"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:background="@drawable/gentle_border" />
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
                 android:layout_marginBottom="@dimen/regular_margin"
                 style="@style/Base.TextAppearance.AppCompat.Caption"
                 android:text="Training history"

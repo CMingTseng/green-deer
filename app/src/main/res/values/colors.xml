@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF9800</color>
 
     <color name="dividerColor">#E5E5E5</color>
+    <color name="gentleBgColor">#F5F5F5</color>
 </resources>

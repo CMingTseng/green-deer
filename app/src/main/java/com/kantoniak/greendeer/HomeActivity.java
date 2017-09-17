@@ -20,6 +20,7 @@ import android.widget.Button;
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.proto.Stats;
+import com.kantoniak.greendeer.ui.CompletnessIndicator;
 import com.kantoniak.greendeer.ui.RunAdapter;
 
 import java.util.List;
@@ -64,6 +65,15 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         final Stats stats = dataProvider.getStats();
                         logger.log(Level.INFO, "RPC stats: " + stats);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDistanceCompletness.setGoal(stats.getMetersGoal() / 1000.d);
+                                mDistanceCompletness.setValue(stats.getMetersSum() / 1000.d);
+                                mWeightCompletness.setGoal(stats.getWeightGoal());
+                                mWeightCompletness.setValue(stats.getWeightLowest());
+                            }
+                        });
                     } catch (StatusRuntimeException e) {
                         logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
                     }
@@ -80,6 +90,8 @@ public class HomeActivity extends AppCompatActivity {
     private final DataProvider dataProvider = new DataProvider();
     private RunAdapter runAdapter;
 
+    private CompletnessIndicator mDistanceCompletness;
+    private CompletnessIndicator mWeightCompletness;
     private View mRunsLoadingView;
     private View mRunsFailedView;
     private Button mRetryFetchRunsButton;
@@ -107,9 +119,16 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        this.mDistanceCompletness = (CompletnessIndicator) findViewById(R.id.distance_completness);
+        this.mWeightCompletness = (CompletnessIndicator) findViewById(R.id.weight_completness);
         this.mRunsLoadingView = (View) findViewById(R.id.fetch_runs_loading_block);
         this.mRunsFailedView = (View) findViewById(R.id.fetch_runs_failed_block);
         this.mRetryFetchRunsButton = (Button) findViewById(R.id.retry_fetch_runs_button);
+
+        mDistanceCompletness.setCategory("Distance");
+        mDistanceCompletness.setValueSuffix(" km");
+        mWeightCompletness.setCategory("Weight");
+        mWeightCompletness.setValueSuffix(" kg");
 
         mRetryFetchRunsButton.setOnClickListener(new View.OnClickListener() {
             @Override

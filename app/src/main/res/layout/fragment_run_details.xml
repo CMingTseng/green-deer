@@ -54,7 +54,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Time (in seconds)"
+        android:text="Time (mm:ss)"
         android:layout_marginTop="@dimen/bigger_margin"
         style="@style/Base.TextAppearance.AppCompat.Caption"
         android:textAllCaps="true" />
@@ -62,7 +62,7 @@
         android:id="@+id/time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"/>
+        android:inputType="datetime"/>
 
     <TextView
         android:layout_width="match_parent"

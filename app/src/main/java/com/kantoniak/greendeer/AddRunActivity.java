@@ -13,10 +13,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class AddRunActivity extends AppCompatActivity implements RunDetailsFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
+
+    private static final Logger logger = Logger.getLogger(AddRunActivity.class.getName());
 
     private RunDetailsFragment mRunDetailsFragment;
 
@@ -26,6 +33,27 @@ public class AddRunActivity extends AppCompatActivity implements RunDetailsFragm
         setContentView(R.layout.activity_add_run);
 
         mRunDetailsFragment = (RunDetailsFragment) getFragmentManager().findFragmentById(R.id.details_fragment);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_add_run, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_save_run) {
+            if (mRunDetailsFragment.runValidation()) {
+                logger.log(Level.INFO, "Saving new run: " + mRunDetailsFragment.getEditedRun());
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

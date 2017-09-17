@@ -7,35 +7,29 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.ui.RunAdapter;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-
-import static io.grpc.Status.Code.UNAVAILABLE;
 
 public class HomeActivity extends AppCompatActivity {
 
-    class NetworkUpdatesHandler extends Handler {
+    private class NetworkUpdatesHandler extends Handler {
         NetworkUpdatesHandler(Looper looper) {
             super(looper);
         }
@@ -70,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final Logger logger = Logger.getLogger(HomeActivity.class.getName());
     private static final int MESSAGE_FETCH_RUNS = 1000;
+    private static final int RESULT_ADD_RUN = 1001;
 
     private final DataProvider dataProvider = new DataProvider();
     private RunAdapter runAdapter;
@@ -148,6 +143,18 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case RESULT_ADD_RUN:
+                if (resultCode == RESULT_OK) {
+                    startFetchRuns();
+                }
+                break;
+        }
+    }
+
     private void startFetchRuns() {
         networkUpdatesHandler.sendMessage(
                 networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
@@ -173,6 +180,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void addNewRun() {
-        startActivity(new Intent(this, AddRunActivity.class));
+        startActivityForResult(new Intent(this, AddRunActivity.class), RESULT_ADD_RUN);
     }
 }

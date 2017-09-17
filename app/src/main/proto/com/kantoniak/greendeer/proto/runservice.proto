@@ -14,8 +14,17 @@ message GetListResponse {
     RunList run_list = 1;
 }
 
+message AddRunsRequest {
+    repeated Run runs_to_add = 1;
+}
+
+message AddRunsResponse {
+    repeated Run added_runs = 1;
+}
+
 service RunService {
 
     rpc GetList(GetListRequest) returns (GetListResponse) {}
+    rpc AddRuns(AddRunsRequest) returns (AddRunsResponse) {}
 
 }

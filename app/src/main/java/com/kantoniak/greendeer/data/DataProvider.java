@@ -1,21 +1,19 @@
 package com.kantoniak.greendeer.data;
 
+import com.kantoniak.greendeer.proto.AddRunsRequest;
+import com.kantoniak.greendeer.proto.AddRunsResponse;
 import com.kantoniak.greendeer.proto.GetListRequest;
 import com.kantoniak.greendeer.proto.GetListResponse;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.proto.RunServiceGrpc;
 
-import java.net.SocketException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 public class DataProvider {
@@ -40,8 +38,12 @@ public class DataProvider {
      */
     public List<Run> getListOfRuns() throws StatusRuntimeException {
         GetListRequest request = GetListRequest.newBuilder().build();
-        GetListResponse response;
         return blockingStub.getList(request).getRunList().getRunsList();
+    }
+
+    public Run addRun(Run run) {
+        AddRunsRequest request = AddRunsRequest.newBuilder().addRunsToAdd(run).build();
+        return blockingStub.addRuns(request).getAddedRunsList().get(0);
     }
 
     /**

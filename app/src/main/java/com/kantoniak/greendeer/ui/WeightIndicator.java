@@ -19,6 +19,6 @@ public class WeightIndicator extends CompletnessIndicator {
     @Override
     protected void updatePercentage() {
         double diff = Math.round((value-goal) * 10.d) / 10.d;
-        this.mTextPercentage.setText((value > goal ? "+" : "-") + valuePrefix + diff + valueSuffix);
+        this.mTextPercentage.setText((value > goal ? "+" : "") + valuePrefix + diff + valueSuffix);
     }
 }

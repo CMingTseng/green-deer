@@ -6,6 +6,7 @@ import com.kantoniak.greendeer.proto.GetListRequest;
 import com.kantoniak.greendeer.proto.GetListResponse;
 import com.kantoniak.greendeer.proto.GetStatsRequest;
 import com.kantoniak.greendeer.proto.Run;
+import com.kantoniak.greendeer.proto.RunList;
 import com.kantoniak.greendeer.proto.RunServiceGrpc;
 import com.kantoniak.greendeer.proto.Stats;
 

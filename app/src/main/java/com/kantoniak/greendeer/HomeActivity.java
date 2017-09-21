@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -149,6 +150,7 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.run_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(runAdapter);
+        mRecyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override

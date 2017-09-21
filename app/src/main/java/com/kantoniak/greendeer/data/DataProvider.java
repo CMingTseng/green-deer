@@ -24,6 +24,7 @@ public class DataProvider {
     private static final Logger logger = Logger.getLogger(DataProvider.class.getName());
     private static final String HOST = "52.169.31.95";
     private static final int PORT = 50051;
+    private static final int CALL_DEADLINE_SECS = 5;
 
     private final ManagedChannel channel;
     private final RunServiceGrpc.RunServiceBlockingStub blockingStub;
@@ -37,7 +38,8 @@ public class DataProvider {
 
     public Stats getStats() throws StatusRuntimeException {
         GetStatsRequest request = GetStatsRequest.newBuilder().build();
-        return blockingStub.getStats(request).getStats();
+        return blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
+                .getStats(request).getStats();
     }
 
     /**
@@ -46,14 +48,16 @@ public class DataProvider {
      */
     public List<Run> getListOfRuns() throws StatusRuntimeException {
         GetListRequest request = GetListRequest.newBuilder().build();
-        return blockingStub.getList(request).getRunList().getRunsList();
+        return blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
+                .getList(request).getRunList().getRunsList();
     }
 
     public Run addRun(Run run) {
         AddRunsRequest request = AddRunsRequest.newBuilder()
                 .setRunsToAdd(RunList.newBuilder().addRuns(run))
                 .build();
-        return blockingStub.addRuns(request).getAddedRuns().getRunsList().get(0);
+        return blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
+                .addRuns(request).getAddedRuns().getRunsList().get(0);
     }
 
     /**

@@ -52,7 +52,11 @@ public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         Run run = runs.get(position);
         holder.mDateText.setText(RunUtils.getDateAsString(run, context));
-        holder.mWeightText.setText("(" + RunUtils.getWeightAsString(run) + ")");
+        if (run.getHasWeight()) {
+            holder.mWeightText.setText("(" + RunUtils.getWeightAsString(run) + ")");
+        } else {
+            holder.mWeightText.setText("");
+        }
         holder.mKilometersText.setText(RunUtils.kilometersAsString(run));
         holder.mAvgTimeText.setText("Avg: " + RunUtils.averageTimeInSecondsAsString(run));
         holder.mTimeText.setText("Σ: " + RunUtils.timeInSecondsAsString(run));

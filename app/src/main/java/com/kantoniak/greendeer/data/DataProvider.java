@@ -50,8 +50,10 @@ public class DataProvider {
     }
 
     public Run addRun(Run run) {
-        AddRunsRequest request = AddRunsRequest.newBuilder().addRunsToAdd(run).build();
-        return blockingStub.addRuns(request).getAddedRunsList().get(0);
+        AddRunsRequest request = AddRunsRequest.newBuilder()
+                .setRunsToAdd(RunList.newBuilder().addRuns(run))
+                .build();
+        return blockingStub.addRuns(request).getAddedRuns().getRunsList().get(0);
     }
 
     /**

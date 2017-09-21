@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.kantoniak.greendeer.R;
 import com.kantoniak.greendeer.data.RunUtils;
+import com.kantoniak.greendeer.proto.AddRunsResponse;
 import com.kantoniak.greendeer.proto.Run;
 
 import java.util.LinkedList;

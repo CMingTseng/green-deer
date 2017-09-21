@@ -119,6 +119,7 @@ public class RunDetailsFragment extends Fragment {
         if (weightValue != null && !weightValue.isEmpty()) {
             try {
                 runBuilder.setWeight(Float.parseFloat(weightValue));
+                runBuilder.setHasWeight(true);
             } catch (NumberFormatException e) {
                 mWeightField.setError("Please enter weight, e.g. 80.3");
                 isValid = false;

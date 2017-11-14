@@ -5,6 +5,7 @@ An application to track the distances your cover while running. Created as a pla
 <p align="center">
   <img src="readme/screenshot-1.png" align="center" alt="List of the entries" />
   <img src="readme/screenshot-2.png" align="center" alt="Adding a new entry" />
+  <img src="readme/screenshot-3.png" align="center" alt="Context menu" />
 </p>
 
 I started this app as a side project during HackZurich 2017 to set up Protocol Buffers for our project. I hope to continue someday to check out other nice features of Android. Feel free to fork if you contact me first.
@@ -13,7 +14,8 @@ I started this app as a side project during HackZurich 2017 to set up Protocol B
 
 * Proto definitions for all the types
 * Listing the tracks straight from the server
-* Adding a new task in a new activity
+* Adding a new run in a new activity
+* Editing and deleting entries
 
 ### Interesting things I learned about
 
@@ -25,8 +27,8 @@ I started this app as a side project during HackZurich 2017 to set up Protocol B
 ## TODOs
 
 * Better handling of errors while adding an entry
-* Editing and deleting an entry (after long-press on entry)
 * Saving tasks locally and then syncing using SyncProvider
+* User authentication
 
 ## Why Green Deer?
 

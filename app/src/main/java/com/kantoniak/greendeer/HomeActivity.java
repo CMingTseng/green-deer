@@ -30,6 +30,7 @@ import com.kantoniak.greendeer.ui.RecyclerItemClickListener;
 import com.kantoniak.greendeer.ui.RunAdapter;
 import com.kantoniak.greendeer.ui.RunListItemInfo;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final int MESSAGE_FETCH_STATS = 1001;
     private static final int MESSAGE_DELETE_RUN = 1002;
     private static final int RESULT_ADD_RUN = 1100;
+    private static final int RESULT_EDIT_RUN = 1101;
 
     private final DataProvider dataProvider = new DataProvider();
     private RunAdapter runAdapter;
@@ -231,17 +233,16 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         RunListItemInfo menuInfo = (RunListItemInfo) item.getMenuInfo();
-        logger.log(Level.WARNING, "RunListItemInfo.id = " + menuInfo.id);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_edit) {
-            logger.log(Level.INFO, "ACTION_EDIT");
+            editRun(menuInfo.run);
             return true;
         }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
-            startDeleteRun(menuInfo.id);
+            startDeleteRun(menuInfo.run.getId());
             return true;
         }
 
@@ -253,6 +254,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case RESULT_ADD_RUN:
+            case RESULT_EDIT_RUN:
                 if (resultCode == RESULT_OK) {
                     startFetchRuns();
                 }
@@ -292,5 +294,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private void addNewRun() {
         startActivityForResult(new Intent(this, AddRunActivity.class), RESULT_ADD_RUN);
+    }
+
+    private void editRun(Run run) {
+        Intent intent = new Intent(this, AddRunActivity.class);
+        intent.putExtra(AddRunActivity.EXTRA_RUN, run.toByteArray());
+        startActivityForResult(intent, RESULT_EDIT_RUN);
     }
 }

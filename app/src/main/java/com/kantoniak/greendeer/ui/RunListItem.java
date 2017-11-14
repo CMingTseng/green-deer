@@ -24,6 +24,6 @@ public class RunListItem extends ConstraintLayout {
     @Override
     protected ContextMenu.ContextMenuInfo getContextMenuInfo() {
         Run run = (Run) getTag(R.id.list_item_tag_id);
-        return new RunListItemInfo(run.getId());
+        return new RunListItemInfo(run);
     }
 }

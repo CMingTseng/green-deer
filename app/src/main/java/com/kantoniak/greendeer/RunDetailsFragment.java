@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.protobuf.Timestamp;
+import com.kantoniak.greendeer.data.RunUtils;
 import com.kantoniak.greendeer.proto.Run;
 
 import java.util.Date;
@@ -52,6 +53,20 @@ public class RunDetailsFragment extends Fragment {
         updateDateTextView();
 
         return view;
+    }
+
+    /** Sets form values copying from Run */
+    public void setFromRun(Run run) {
+        editedRun = Run.newBuilder(run).build();
+        updateDateTextView();
+        mDistanceField.setText(String.valueOf(editedRun.getMeters()));
+        mTimeField.setText(RunUtils.timeInSecondsAsString(editedRun));
+        if (run.getHasWeight()) {
+            mWeightField.setText(String.format("%.2f", editedRun.getWeight()));
+        } else {
+            mWeightField.getEditableText().clear();
+        }
+
     }
 
     public void showDatePicker(){

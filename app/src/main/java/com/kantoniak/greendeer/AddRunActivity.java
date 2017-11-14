@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
 
@@ -25,6 +26,8 @@ import java.util.logging.Logger;
 import io.grpc.StatusRuntimeException;
 
 public class AddRunActivity extends AppCompatActivity implements RunDetailsFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
+
+        final static String EXTRA_RUN = "extra-run";
 
     private class NetworkUpdatesHandler extends Handler {
         NetworkUpdatesHandler(Looper looper) {
@@ -50,17 +53,36 @@ public class AddRunActivity extends AppCompatActivity implements RunDetailsFragm
                         logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
                     }
                     break;
+
+                case MESSAGE_EDIT_RUNS:
+                    // TODO(krzysztofa): UI information, change button to spinner, handle errors
+                    Run toEdit = (Run) msg.obj;
+                    logger.log(Level.INFO, "Saving updated run...");
+                    try {
+                        dataProvider.editRun(toEdit);
+
+                        // Inform HomeActivity about success
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
+
+                    } catch (StatusRuntimeException e) {
+                        logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
+                    }
+                    break;
             }
         }
     };
 
     private static final Logger logger = Logger.getLogger(AddRunActivity.class.getName());
     private static final int MESSAGE_ADD_RUNS = 1000;
+    private static final int MESSAGE_EDIT_RUNS = 1001;
 
     private final DataProvider dataProvider = new DataProvider();
     private final HandlerThread networkUpdatesThread = new HandlerThread("NetworkUpdatesThread");
     private Handler networkUpdatesHandler;
 
+    private boolean editMode = false;
     private RunDetailsFragment mRunDetailsFragment;
 
     @Override
@@ -68,7 +90,21 @@ public class AddRunActivity extends AppCompatActivity implements RunDetailsFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_run);
 
+        Intent intent = getIntent();
+        this.editMode = intent.hasExtra(EXTRA_RUN);
+
         mRunDetailsFragment = (RunDetailsFragment) getFragmentManager().findFragmentById(R.id.details_fragment);
+
+        if (editMode) {
+            this.setTitle(R.string.edit_run);
+            try {
+                mRunDetailsFragment.setFromRun(Run.parseFrom(intent.getByteArrayExtra(EXTRA_RUN)));
+            } catch (InvalidProtocolBufferException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            this.setTitle(R.string.add_run);
+        }
 
         networkUpdatesThread.start();
         networkUpdatesHandler = new NetworkUpdatesHandler(networkUpdatesThread.getLooper());
@@ -86,8 +122,13 @@ public class AddRunActivity extends AppCompatActivity implements RunDetailsFragm
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save_run) {
-            if (mRunDetailsFragment.runValidation()) {
-                logger.log(Level.INFO, "Saving new run: " + mRunDetailsFragment.getEditedRun());
+            if (!mRunDetailsFragment.runValidation()) {
+                return true;
+            }
+            if (editMode) {
+                networkUpdatesHandler.sendMessage(
+                        networkUpdatesHandler.obtainMessage(MESSAGE_EDIT_RUNS, mRunDetailsFragment.getEditedRun()));
+            } else {
                 networkUpdatesHandler.sendMessage(
                         networkUpdatesHandler.obtainMessage(MESSAGE_ADD_RUNS, mRunDetailsFragment.getEditedRun()));
             }

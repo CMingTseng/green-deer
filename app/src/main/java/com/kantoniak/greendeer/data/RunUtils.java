@@ -15,7 +15,7 @@ public class RunUtils {
     }
 
     public static String timeInSecondsAsString(Run run) {
-        return String.format("%2d:%02d", run.getTimeInSeconds() / 60, run.getTimeInSeconds() % 60);
+        return String.format("%d:%02d", run.getTimeInSeconds() / 60, run.getTimeInSeconds() % 60);
     }
 
     public static String averageTimeInSecondsAsString(Run run) {

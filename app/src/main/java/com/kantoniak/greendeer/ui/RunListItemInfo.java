@@ -2,11 +2,13 @@ package com.kantoniak.greendeer.ui;
 
 import android.view.ContextMenu;
 
+import com.kantoniak.greendeer.proto.Run;
+
 public class RunListItemInfo implements ContextMenu.ContextMenuInfo {
 
-    public int id;
+    public Run run;
 
-    public RunListItemInfo(int id) {
-        this.id = id;
+    public RunListItemInfo(Run run) {
+        this.run = run;
     }
 }

@@ -13,16 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
 import com.kantoniak.greendeer.proto.Stats;
 import com.kantoniak.greendeer.ui.CompletnessIndicator;
+import com.kantoniak.greendeer.ui.ItemTouchListener;
+import com.kantoniak.greendeer.ui.RecyclerItemClickListener;
 import com.kantoniak.greendeer.ui.RunAdapter;
+import com.kantoniak.greendeer.ui.RunListItemInfo;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -151,6 +156,21 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(runAdapter);
         mRecyclerView.setNestedScrollingEnabled(false);
+
+        mRecyclerView.addOnItemTouchListener(new ItemTouchListener(this, mRecyclerView, new RecyclerItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                logger.log(Level.INFO, "CLICK");
+            }
+
+            @Override
+            public void onLongPress(View view, int position) {
+                logger.log(Level.INFO, "LONG PRESS");
+                openContextMenu(view);
+            }
+        }));
+
+        registerForContextMenu(mRecyclerView);
     }
 
     @Override
@@ -170,6 +190,28 @@ public class HomeActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
             startFetchRuns();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        RunListItemInfo menuInfo = (RunListItemInfo) item.getMenuInfo();
+        logger.log(Level.WARNING, "RunListItemInfo.id = " + menuInfo.id);
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_edit) {
+            logger.log(Level.INFO, "ACTION_EDIT");
+            return true;
+        }
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_delete) {
+            logger.log(Level.INFO, "ACTION_DELETE");
             return true;
         }
 

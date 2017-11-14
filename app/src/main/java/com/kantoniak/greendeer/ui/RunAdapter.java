@@ -2,7 +2,12 @@ package com.kantoniak.greendeer.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -14,11 +19,24 @@ import com.kantoniak.greendeer.proto.Run;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
 
+    private static final Logger logger = Logger.getLogger(RunAdapter.class.getName());
+
     private final Context context;
     private final List<Run> runs = new LinkedList<>();
+    private final View.OnCreateContextMenuListener onCreateContextMenuListener = new View.OnCreateContextMenuListener() {
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            Run run = (Run) v.getTag(R.id.list_item_tag_id);
+            menu.setHeaderTitle("Run #" + run.getId() + ",\n" + RunUtils.getDateAsString(run, context));
+            new MenuInflater(context).inflate(R.menu.menu_item_context, menu);
+        }
+    };
 
     public RunAdapter(Context context) {
         this.context = context;
@@ -26,6 +44,7 @@ public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View mItemView;
         public TextView mDateText;
         public TextView mWeightText;
         public TextView mKilometersText;
@@ -34,11 +53,14 @@ public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mItemView = itemView;
             mDateText = (TextView) itemView.findViewById(R.id.date);
             mWeightText = (TextView) itemView.findViewById(R.id.weight);
             mKilometersText = (TextView) itemView.findViewById(R.id.kilometers);
             mAvgTimeText = (TextView) itemView.findViewById(R.id.avg_time);
             mTimeText = (TextView) itemView.findViewById(R.id.time);
+
+            itemView.setOnCreateContextMenuListener(onCreateContextMenuListener);
         }
     }
 
@@ -52,6 +74,7 @@ public class RunAdapter extends RecyclerView.Adapter<RunAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Run run = runs.get(position);
+        holder.mItemView.setTag(R.id.list_item_tag_id, run);
         holder.mDateText.setText(RunUtils.getDateAsString(run, context));
         if (run.getHasWeight()) {
             holder.mWeightText.setText("(" + RunUtils.getWeightAsString(run) + ")");

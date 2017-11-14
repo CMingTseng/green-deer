@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.kantoniak.greendeer.ui.RunListItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/regular_margin">
+
+    <tag android:id="@+id/list_item_tag_id"/>
 
     <TextView
         android:id="@+id/date"
@@ -62,4 +64,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/DividerView"/>
 
-</android.support.constraint.ConstraintLayout>
+</com.kantoniak.greendeer.ui.RunListItem>

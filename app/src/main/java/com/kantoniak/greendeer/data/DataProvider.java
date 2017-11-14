@@ -2,6 +2,9 @@ package com.kantoniak.greendeer.data;
 
 import com.kantoniak.greendeer.proto.AddRunsRequest;
 import com.kantoniak.greendeer.proto.AddRunsResponse;
+import com.kantoniak.greendeer.proto.DeleteRunsRequest;
+import com.kantoniak.greendeer.proto.DeleteRunsResponse;
+import com.kantoniak.greendeer.proto.EditRunsRequest;
 import com.kantoniak.greendeer.proto.GetListRequest;
 import com.kantoniak.greendeer.proto.GetListResponse;
 import com.kantoniak.greendeer.proto.GetStatsRequest;
@@ -58,6 +61,22 @@ public class DataProvider {
                 .build();
         return blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
                 .addRuns(request).getAddedRuns().getRunsList().get(0);
+    }
+
+    public Run editRun(Run run) {
+        EditRunsRequest request = EditRunsRequest.newBuilder()
+                .setRunsToEdit(RunList.newBuilder().addRuns(run))
+                .build();
+        return blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
+                .editRuns(request).getChangedRuns().getRunsList().get(0);
+    }
+
+    public void deleteRun(int id) {
+        DeleteRunsRequest request = DeleteRunsRequest.newBuilder()
+                .addIds(id)
+                .build();
+        blockingStub.withDeadlineAfter(CALL_DEADLINE_SECS, TimeUnit.SECONDS)
+                .deleteRuns(request);
     }
 
     /**

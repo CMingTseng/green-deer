@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.kantoniak.greendeer.data.DataProvider;
 import com.kantoniak.greendeer.proto.Run;
@@ -46,6 +47,12 @@ public class HomeActivity extends AppCompatActivity {
         public void handleMessage(Message msg){
             switch (msg.what) {
                 case MESSAGE_FETCH_RUNS:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showFetchRunsLoadingBlock();
+                        }
+                    });
                     logger.log(Level.INFO, "Fetching runs...");
                     try {
                         final List<Run> runs = dataProvider.getListOfRuns();
@@ -84,6 +91,28 @@ public class HomeActivity extends AppCompatActivity {
                         logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
                     }
                     break;
+                case MESSAGE_DELETE_RUN:
+                    logger.log(Level.INFO, "Fetching runs...");
+                    try {
+                        final int id = (int) msg.obj;
+                        dataProvider.deleteRun(id);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "Deleted run #" + id, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        startFetchRuns();
+                    } catch (StatusRuntimeException e) {
+                        logger.log(Level.WARNING, "RPC failed: " + e.getStatus().getCode());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "Could not delete run", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                    break;
             }
         }
     };
@@ -91,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final Logger logger = Logger.getLogger(HomeActivity.class.getName());
     private static final int MESSAGE_FETCH_RUNS = 1000;
     private static final int MESSAGE_FETCH_STATS = 1001;
+    private static final int MESSAGE_DELETE_RUN = 1002;
     private static final int RESULT_ADD_RUN = 1100;
 
     private final DataProvider dataProvider = new DataProvider();
@@ -211,7 +241,7 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
-            logger.log(Level.INFO, "ACTION_DELETE");
+            startDeleteRun(menuInfo.id);
             return true;
         }
 
@@ -235,7 +265,11 @@ public class HomeActivity extends AppCompatActivity {
                 networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_STATS));
         networkUpdatesHandler.sendMessage(
                 networkUpdatesHandler.obtainMessage(MESSAGE_FETCH_RUNS));
-        showFetchRunsLoadingBlock();
+    }
+
+    private void startDeleteRun(int id) {
+        networkUpdatesHandler.sendMessage(
+                networkUpdatesHandler.obtainMessage(MESSAGE_DELETE_RUN, id));
     }
 
     private void showFetchRunsLoadingBlock() {

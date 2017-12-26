@@ -25,7 +25,7 @@ import io.grpc.StatusRuntimeException;
 public class DataProvider {
 
     private static final Logger logger = Logger.getLogger(DataProvider.class.getName());
-    private static final String HOST = "52.169.31.95";
+    private static final String HOST = "35.227.166.117";
     private static final int PORT = 50051;
     private static final int CALL_DEADLINE_SECS = 5;
 
